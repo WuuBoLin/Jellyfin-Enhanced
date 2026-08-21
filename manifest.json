@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/n00bcodr/Jellyfin-Enhanced/master/docs/images/icon.png",
     "versions": [
       {
+        "changelog": "- fix(subtitles): sync position preview with the bottom-anchored render ([#771](https://github.com/n00bcodr/Jellyfin-Enhanced/issues/771))\n - feat(reviews): support half-star ratings\n - feat(jellyseerr): option to link available items' posters straight to Jellyfin\n - fix(subtitles): move the server-side vertical position default to 95\n - fix(jellyseerr): declare the missing AvailablePosterLinksToJellyfin option",
+        "targetAbi": "10.11.0.0",
+        "version": "12.3.4.0",
+        "sourceUrl": "https://github.com/WuuBoLin/Jellyfin-Enhanced/releases/download/12.3.4.0/Jellyfin.Plugin.JellyfinEnhanced_10.11.0.zip",
+        "checksum": "23FF722A3077D65F337966C03430886E",
+        "timestamp": "2026-08-21T20:55:40"
+      },
+      {
         "changelog": "- feat(subtitles): add letter spacing slider to the Layout block",
         "targetAbi": "10.11.0.0",
         "version": "12.3.3.0",
