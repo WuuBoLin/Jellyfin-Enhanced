@@ -444,6 +444,11 @@
         const posGrid = document.getElementById('subtitlePositionGrid');
         const posPreview = document.getElementById('subtitlePositionPreview');
         const posResetBtn = document.getElementById('subtitlePositionReset');
+        const posReadout = document.getElementById('subtitlePositionReadout');
+
+        const updatePositionReadout = () => {
+            if (posReadout) posReadout.textContent = `${JE.currentSettings.subtitleHorizontalPosition ?? 50}, ${JE.currentSettings.subtitleVerticalPosition ?? 85}`;
+        };
 
         if (posGrid) {
             const updatePosition = (xPct, yPct) => {
@@ -455,8 +460,65 @@
                 }
                 JE.currentSettings.subtitleHorizontalPosition = Math.round(xPct);
                 JE.currentSettings.subtitleVerticalPosition = Math.round(yPct);
+                updatePositionReadout();
                 if (typeof JE.applySubtitlePosition === 'function') JE.applySubtitlePosition();
             };
+
+            const nudgePosition = (dx, dy) => {
+                const x = JE.currentSettings.subtitleHorizontalPosition ?? 50;
+                const y = JE.currentSettings.subtitleVerticalPosition ?? 85;
+                updatePosition(x + dx, y + dy);
+                resetAutoCloseTimer();
+            };
+
+            document.querySelectorAll('.je-pos-nudge').forEach((btn) => {
+                const dx = parseInt(btn.dataset.dx, 10) || 0;
+                const dy = parseInt(btn.dataset.dy, 10) || 0;
+                let holdDelay = null;
+                let holdRepeat = null;
+
+                const stopHold = () => {
+                    if (holdDelay === null && holdRepeat === null) return;
+                    clearTimeout(holdDelay);
+                    clearInterval(holdRepeat);
+                    holdDelay = null;
+                    holdRepeat = null;
+                    JE.saveUserSettings('settings.json', JE.currentSettings);
+                };
+
+                btn.addEventListener('pointerdown', (e) => {
+                    // preventDefault stops touch-hold from selecting text or
+                    // showing the context menu while repeating.
+                    e.preventDefault();
+                    nudgePosition(dx, dy);
+                    holdDelay = setTimeout(() => {
+                        holdRepeat = setInterval(() => nudgePosition(dx, dy), 60);
+                    }, 400);
+                });
+                ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => btn.addEventListener(ev, stopHold));
+
+                // Keyboard activation fires click with detail 0 and no pointer events.
+                btn.addEventListener('click', (e) => {
+                    if (e.detail !== 0) return;
+                    nudgePosition(dx, dy);
+                    JE.saveUserSettings('settings.json', JE.currentSettings);
+                });
+            });
+
+            posGrid.addEventListener('keydown', (e) => {
+                const step = e.shiftKey ? 5 : 1;
+                const deltas = { ArrowUp: [0, -step], ArrowDown: [0, step], ArrowLeft: [-step, 0], ArrowRight: [step, 0] };
+                const delta = deltas[e.key];
+                if (!delta) return;
+                // Keep arrow keys from reaching Jellyfin's global shortcuts.
+                e.preventDefault();
+                e.stopPropagation();
+                nudgePosition(delta[0], delta[1]);
+            });
+
+            posGrid.addEventListener('keyup', (e) => {
+                if (e.key.startsWith('Arrow')) JE.saveUserSettings('settings.json', JE.currentSettings);
+            });
 
             const getPctFromEvent = (e) => {
                 const rect = posGrid.getBoundingClientRect();
@@ -516,6 +578,7 @@
                 JE.currentSettings.subtitleHorizontalPosition = 50;
                 JE.currentSettings.subtitleVerticalPosition = 85;
                 if (posPreview) { posPreview.style.left = '50%'; posPreview.style.top = '85%'; }
+                updatePositionReadout();
                 if (typeof JE.applySubtitlePosition === 'function') JE.applySubtitlePosition();
                 JE.saveUserSettings('settings.json', JE.currentSettings);
                 resetAutoCloseTimer();
