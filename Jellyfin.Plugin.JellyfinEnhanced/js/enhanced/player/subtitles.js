@@ -65,26 +65,28 @@
         if (!JE.isSubtitleBackgroundTransparent(bgColor)) return 'none';
 
         const layers = [];
-        const outlineSize = parseFloat(JE.currentSettings.subtitleOutlineSize) || 0;
-        if (outlineSize > 0) {
+        // Convert percentages to em so every rendering surface scales with its font.
+        const outlinePct = parseFloat(JE.currentSettings.subtitleOutlineWidthPct) || 0;
+        if (outlinePct > 0) {
             const outlineColor = JE.currentSettings.subtitleOutlineColor || '#000000';
-            // Approximate a smooth outline with shadow copies spread evenly on
-            // the circle of radius outlineSize. The copy count scales with the
-            // circumference (one copy per ~0.75px of arc) so neighboring copies
-            // keep overlapping at larger radii — a fixed 8-direction spread
-            // leaves detached lobes and uneven thickness beyond ~2px.
-            const copies = Math.max(8, Math.min(32, Math.ceil((2 * Math.PI * outlineSize) / 0.75)));
+            const radiusEm = outlinePct / 100;
+            // Circumference-based sampling avoids the detached lobes produced by
+            // fixed eight-direction offsets. A 36px reference font targets
+            // ~0.75px arcs while the clamp bounds the generated CSS.
+            const referenceRadiusPx = radiusEm * 36;
+            const copies = Math.max(8, Math.min(64, Math.ceil((2 * Math.PI * referenceRadiusPx) / 0.75)));
             for (let i = 0; i < copies; i++) {
                 const angle = (2 * Math.PI * i) / copies;
-                const x = +(outlineSize * Math.cos(angle)).toFixed(2);
-                const y = +(outlineSize * Math.sin(angle)).toFixed(2);
-                layers.push(`${x}px ${y}px 1px ${outlineColor}`);
+                const x = +(radiusEm * Math.cos(angle)).toFixed(4);
+                const y = +(radiusEm * Math.sin(angle)).toFixed(4);
+                layers.push(`${x}em ${y}em 0.03em ${outlineColor}`);
             }
         }
-        const shadowSize = parseFloat(JE.currentSettings.subtitleShadowSize) || 0;
-        if (shadowSize > 0) {
+        const shadowPct = parseFloat(JE.currentSettings.subtitleShadowBlurPct) || 0;
+        if (shadowPct > 0) {
             const shadowColor = JE.currentSettings.subtitleShadowColor || '#000000';
-            layers.push(`0 0 ${shadowSize}px ${shadowColor}`, `0 0 ${shadowSize * 2}px ${shadowColor}`);
+            const blurEm = shadowPct / 100;
+            layers.push(`0 0 ${blurEm}em ${shadowColor}`, `0 0 ${blurEm * 2}em ${shadowColor}`);
         }
         return layers.length ? layers.join(', ') : 'none';
     };
