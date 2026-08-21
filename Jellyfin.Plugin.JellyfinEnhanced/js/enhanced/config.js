@@ -94,6 +94,7 @@
             customSubtitleTextColor: '#FFFFFFFF', customSubtitleBgColor: '#00000000',
             subtitleOutlineColor: '#000000', subtitleOutlineWidthPct: 6,
             subtitleShadowColor: '#000000', subtitleShadowBlurPct: 0,
+            subtitleLetterSpacingPct: 0,
             usingCustomColors: false,
             disableCustomSubtitleStyles: false,
             subtitleVerticalPosition: 85, subtitleHorizontalPosition: 50,

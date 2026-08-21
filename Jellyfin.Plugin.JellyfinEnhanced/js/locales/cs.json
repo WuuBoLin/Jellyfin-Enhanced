@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Velikost",
     "panel_settings_subtitles_font": "Písmo",
     "panel_settings_subtitles_position": "Pozice",
+    "panel_settings_subtitles_layout": "Rozvržení",
+    "panel_settings_subtitles_letter_spacing": "Rozestup písmen",
     "panel_settings_subtitles_position_note": "Vyžaduje styl Jellyfin titulky nastavený na <b>Vlastní</b> v nastavení titulků",
     "panel_settings_subtitles_position_nudge_up": "Posunout nahoru",
     "panel_settings_subtitles_position_nudge_down": "Posunout dolů",

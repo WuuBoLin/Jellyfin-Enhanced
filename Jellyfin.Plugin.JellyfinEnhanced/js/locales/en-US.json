@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Size",
     "panel_settings_subtitles_font": "Font",
     "panel_settings_subtitles_position": "Position",
+    "panel_settings_subtitles_layout": "Layout",
+    "panel_settings_subtitles_letter_spacing": "Letter spacing",
     "panel_settings_subtitles_position_note": "Requires Jellyfin subtitle style set to <b>Custom</b> in subtitle settings",
     "panel_settings_subtitles_position_nudge_up": "Nudge up",
     "panel_settings_subtitles_position_nudge_down": "Nudge down",

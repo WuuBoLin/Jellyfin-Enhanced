@@ -403,6 +403,8 @@
     "jellyseerr_icon_no_user_tooltip": "המשתמש לא נמצא ב-Seerr",
     "panel_settings_playback": "הגדרות ניגון",
     "panel_settings_subtitles_position": "תפקיד",
+    "panel_settings_subtitles_layout": "פריסה",
+    "panel_settings_subtitles_letter_spacing": "ריווח אותיות",
     "bookmark_delete_all_confirm": "למחוק את כל הסימניות? לא ניתן לבטל פעולה זו!",
     "panel_shortcuts_global": "גלובאלי",
     "feature_language_tags": "{{icon:flag}} תגי שפה",

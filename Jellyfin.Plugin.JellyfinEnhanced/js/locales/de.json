@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Größe",
     "panel_settings_subtitles_font": "Schrift",
     "panel_settings_subtitles_position": "Position",
+    "panel_settings_subtitles_layout": "Layout",
+    "panel_settings_subtitles_letter_spacing": "Zeichenabstand",
     "panel_settings_subtitles_position_note": "Erfordert, dass der Jellyfin-Untertitelstil in den Untertiteleinstellungen auf <b>Benutzerdefiniert</b> gesetzt ist",
     "panel_settings_subtitles_position_nudge_up": "Nach oben verschieben",
     "panel_settings_subtitles_position_nudge_down": "Nach unten verschieben",

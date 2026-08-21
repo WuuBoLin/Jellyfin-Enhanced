@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Размер",
     "panel_settings_subtitles_font": "Шрифт",
     "panel_settings_subtitles_position": "Позиция",
+    "panel_settings_subtitles_layout": "Расположение",
+    "panel_settings_subtitles_letter_spacing": "Межбуквенный интервал",
     "panel_settings_subtitles_position_note": "Требуется стиль субтитров Jellyfin для <b>Custom</b> в настройках субтитров",
     "panel_settings_subtitles_position_nudge_up": "Сдвинуть вверх",
     "panel_settings_subtitles_position_nudge_down": "Сдвинуть вниз",

@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "الحجم",
     "panel_settings_subtitles_font": "الخط",
     "panel_settings_subtitles_position": "الموضع",
+    "panel_settings_subtitles_layout": "التخطيط",
+    "panel_settings_subtitles_letter_spacing": "تباعد الأحرف",
     "panel_settings_subtitles_position_note": "يتطلب أسلوب الترجمه الفرعيه لـ (جيلافين)",
     "panel_settings_subtitles_position_nudge_up": "إزاحة لأعلى",
     "panel_settings_subtitles_position_nudge_down": "إزاحة لأسفل",

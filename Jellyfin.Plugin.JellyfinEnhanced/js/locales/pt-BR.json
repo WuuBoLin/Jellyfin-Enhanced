@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Tamanho",
     "panel_settings_subtitles_font": "Fonte",
     "panel_settings_subtitles_position": "Posição",
+    "panel_settings_subtitles_layout": "Layout",
+    "panel_settings_subtitles_letter_spacing": "Espaçamento entre letras",
     "panel_settings_subtitles_position_note": "Requer que o estilo das legendas do Jellyfin esteja definido como <b>Personalizado</b> nas configurações de legendas",
     "panel_settings_subtitles_position_nudge_up": "Mover para cima",
     "panel_settings_subtitles_position_nudge_down": "Mover para baixo",

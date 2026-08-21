@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Størrelse",
     "panel_settings_subtitles_font": "Skrift",
     "panel_settings_subtitles_position": "Posisjon",
+    "panel_settings_subtitles_layout": "Oppsett",
+    "panel_settings_subtitles_letter_spacing": "Tegnavstand",
     "panel_settings_subtitles_position_note": "Krever at Jellyfin-undertekststilen er satt til <b>Egendefinert</b> i undertekstinnstillingene",
     "panel_settings_subtitles_position_nudge_up": "Flytt opp",
     "panel_settings_subtitles_position_nudge_down": "Flytt ned",
