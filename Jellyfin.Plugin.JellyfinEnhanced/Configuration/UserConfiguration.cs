@@ -26,7 +26,7 @@ namespace Jellyfin.Plugin.JellyfinEnhanced.Configuration
         public int SubtitleShadowBlurPct { get; set; } = 0;
         public int SubtitleLetterSpacingPct { get; set; } = 0;
         public bool UsingCustomColors { get; set; }
-        public int SubtitleVerticalPosition { get; set; } = 85;
+        public int SubtitleVerticalPosition { get; set; } = 95;
         public int SubtitleHorizontalPosition { get; set; } = 50;
         public bool RandomButtonEnabled { get; set; }
         public bool RandomUnwatchedOnly { get; set; }
