@@ -293,20 +293,27 @@
                             <div style="padding: 12px; background: ${presetBoxBackground}; border-radius: 6px; border-left: 3px solid ${toggleAccentColor};">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                     <span style="font-weight: 600;">${JE.t('panel_settings_subtitles_position')}</span>
-                                    <button id="subtitlePositionReset" style="font-family:inherit; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); padding:3px 8px; border-radius:4px; font-size:11px; cursor:pointer; display:flex; align-items:center;"><span class="material-icons" style="font-size:16px;">restart_alt</span></button>
-                                </div>
-                                <div id="subtitlePositionGrid" style="position:relative; width:min(60vw,280px); height:min(34vw,158px); background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; cursor:crosshair; user-select:none; overflow:hidden; margin: 0 auto;">
-                                    <!-- Crosshair guides -->
-                                    <div style="position:absolute;inset:0;pointer-events:none;">
-                                        <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.08);transform:translateX(-50%);"></div>
-                                        <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,0.08);transform:translateY(-50%);"></div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span id="subtitlePositionReadout" style="font-size:11px; color:rgba(255,255,255,0.5); font-variant-numeric:tabular-nums;">${JE.currentSettings.subtitleHorizontalPosition ?? 50}, ${JE.currentSettings.subtitleVerticalPosition ?? 95}</span>
+                                        <button id="subtitlePositionReset" style="font-family:inherit; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); padding:3px 8px; border-radius:4px; font-size:11px; cursor:pointer; display:flex; align-items:center;"><span class="material-icons" style="font-size:16px;">restart_alt</span></button>
                                     </div>
-                                    <!-- Subtitle preview text. Upstream anchors this box by its
-                                         BOTTOM edge (bottom: 100-yPct%), mirroring
-                                         applySubtitlePosition so the preview matches where playback
-                                         subtitles actually land. The text-shadow is the computed
-                                         outline/shadow value, so it tracks the user's settings. -->
-                                    <div id="subtitlePositionPreview" style="position:absolute; transform:translateX(-50%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:${JE.computeSubtitleTextShadow()}; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; bottom:${100 - (JE.currentSettings.subtitleVerticalPosition ?? 95)}%; top:auto;">AaBbCcDd</div>
+                                </div>
+                                <div style="display:grid; grid-template-columns:min-content min-content min-content; gap:6px; justify-content:center; justify-items:center; align-items:center;">
+                                    <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeUp" data-dx="0" data-dy="-1" style="grid-column:2; grid-row:1; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_up')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_up')}"><span class="material-icons">keyboard_arrow_up</span></button>
+                                    <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeLeft" data-dx="-1" data-dy="0" style="grid-column:1; grid-row:2; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_left')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_left')}"><span class="material-icons">keyboard_arrow_left</span></button>
+                                    <div id="subtitlePositionGrid" tabindex="0" style="grid-column:2; grid-row:2; position:relative; width:min(52vw,280px); height:min(29vw,158px); background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; cursor:crosshair; user-select:none; overflow:hidden;">
+                                        <!-- Crosshair guides -->
+                                        <div style="position:absolute;inset:0;pointer-events:none;">
+                                            <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.08);transform:translateX(-50%);"></div>
+                                            <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,0.08);transform:translateY(-50%);"></div>
+                                        </div>
+                                        <!-- Subtitle preview text, anchored by its BOTTOM edge to
+                                             mirror applySubtitlePosition (bottom: 100-yPct%) so the
+                                             preview matches where playback subtitles actually land. -->
+                                        <div id="subtitlePositionPreview" style="position:absolute; transform:translateX(-50%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:${JE.computeSubtitleTextShadow()}; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; bottom:${100 - (JE.currentSettings.subtitleVerticalPosition ?? 95)}%; top:auto;">AaBbCcDd</div>
+                                    </div>
+                                    <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeRight" data-dx="1" data-dy="0" style="grid-column:3; grid-row:2; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_right')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_right')}"><span class="material-icons">keyboard_arrow_right</span></button>
+                                    <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeDown" data-dx="0" data-dy="1" style="grid-column:2; grid-row:3; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_down')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_down')}"><span class="material-icons">keyboard_arrow_down</span></button>
                                 </div>
                                 <div id="je-subtitle-position-note" style="display:none; margin-top:6px; font-size:11px; color:#ffcf5c; text-align:center; align-items:center; justify-content:center; gap:4px;">
                                     <span class="material-icons" style="font-size:13px;">warning</span>
