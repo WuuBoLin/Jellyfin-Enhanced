@@ -269,7 +269,7 @@
                                                 <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">Outline</div>
                                                 <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
                                                     <input type="color" id="subtitleOutlineColorPicker" value="${JE.currentSettings.subtitleOutlineColor || '#000000'}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
-                                                    <input type="range" id="subtitleOutlineWidthPct" min="0" max="25" step="1" value="${JE.currentSettings.subtitleOutlineWidthPct ?? 6}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                                    <input type="range" id="subtitleOutlineWidthPct" min="0" max="10" step="1" value="${JE.currentSettings.subtitleOutlineWidthPct ?? 6}" style="flex: 1; accent-color: ${primaryAccentColor};">
                                                     <span id="subtitleOutlineWidthPctValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleOutlineWidthPct ?? 6}%</span>
                                                 </div>
                                             </div>
