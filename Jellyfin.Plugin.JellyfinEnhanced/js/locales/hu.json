@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Méret",
     "panel_settings_subtitles_font": "Betűtípus",
     "panel_settings_subtitles_position": "Pozíció",
+    "panel_settings_subtitles_layout": "Elrendezés",
+    "panel_settings_subtitles_letter_spacing": "Betűköz",
     "panel_settings_subtitles_position_note": "A Jellyfin feliratstílusát a feliratbeállításokban <b>Egyéni</b> értékre kell állítani",
     "panel_settings_subtitles_position_nudge_up": "Elmozdítás felfelé",
     "panel_settings_subtitles_position_nudge_down": "Elmozdítás lefelé",

@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Storlek",
     "panel_settings_subtitles_font": "Typsnitt",
     "panel_settings_subtitles_position": "Position",
+    "panel_settings_subtitles_layout": "Layout",
+    "panel_settings_subtitles_letter_spacing": "Teckenavstånd",
     "panel_settings_subtitles_position_note": "Kräver Jellyfin subtitle stil inställd på <b>Custom</b> i undertextinställningar",
     "panel_settings_subtitles_position_nudge_up": "Flytta upp",
     "panel_settings_subtitles_position_nudge_down": "Flytta ned",

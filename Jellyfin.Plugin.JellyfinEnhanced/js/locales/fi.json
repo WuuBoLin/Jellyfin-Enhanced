@@ -337,6 +337,8 @@
     "jellyseerr_icon_no_user_tooltip": "Käyttäjää ei löytynyt Seerristä",
     "panel_settings_playback": "Toistoasetukset",
     "panel_settings_subtitles_position": "Sijanti",
+    "panel_settings_subtitles_layout": "Asettelu",
+    "panel_settings_subtitles_letter_spacing": "Merkkiväli",
     "bookmark_delete_all_confirm": "Poista KAIKKI kirjanmerkit? Tätä ei voi peruuttaa!",
     "panel_shortcuts_global": "Globaali",
     "feature_language_tags": "{{icon:flag}} Kielitagit",

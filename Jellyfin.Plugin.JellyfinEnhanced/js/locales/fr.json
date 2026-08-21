@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Taille",
     "panel_settings_subtitles_font": "Police",
     "panel_settings_subtitles_position": "Position",
+    "panel_settings_subtitles_layout": "Disposition",
+    "panel_settings_subtitles_letter_spacing": "Espacement des lettres",
     "panel_settings_subtitles_position_note": "Nécessite que le style des sous-titres Jellyfin soit défini sur <b>Personnalisé</b> dans les paramètres des sous-titres",
     "panel_settings_subtitles_position_nudge_up": "Décaler vers le haut",
     "panel_settings_subtitles_position_nudge_down": "Décaler vers le bas",

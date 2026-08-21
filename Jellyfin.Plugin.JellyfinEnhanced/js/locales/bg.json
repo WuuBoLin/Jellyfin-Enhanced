@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Размер",
     "panel_settings_subtitles_font": "Шрифт",
     "panel_settings_subtitles_position": "Позиция",
+    "panel_settings_subtitles_layout": "Оформление",
+    "panel_settings_subtitles_letter_spacing": "Разредка на буквите",
     "panel_settings_subtitles_position_note": "Изисква стилът на субтитрите на Jellyfin да бъде зададен на <b>Персонализиран</b> в настройките за субтитри",
     "panel_settings_subtitles_position_nudge_up": "Премести нагоре",
     "panel_settings_subtitles_position_nudge_down": "Премести надолу",

@@ -82,6 +82,8 @@
     "panel_settings_subtitles_size": "Dimensione",
     "panel_settings_subtitles_font": "Font",
     "panel_settings_subtitles_position": "Posizione",
+    "panel_settings_subtitles_layout": "Disposizione",
+    "panel_settings_subtitles_letter_spacing": "Spaziatura lettere",
     "panel_settings_subtitles_position_note": "Richiede lo stile di sottotitolo Jellyfin impostato su <b>Custom</b> nelle impostazioni dei sottotitoli",
     "panel_settings_subtitles_position_nudge_up": "Sposta in alto",
     "panel_settings_subtitles_position_nudge_down": "Sposta in basso",

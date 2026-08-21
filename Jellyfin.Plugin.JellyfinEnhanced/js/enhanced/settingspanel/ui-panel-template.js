@@ -285,16 +285,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="subtitleColorPreview" style="display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; border-radius: 6px; background: rgba(0,0,0,0.3); color: ${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color: ${JE.currentSettings.customSubtitleBgColor || '#00000000'}; text-shadow: ${JE.computeSubtitleTextShadow()}; padding: 12px 20px; flex: 0.5; align-self: center;">AaBbCcDd</div>
+                                    <div id="subtitleColorPreview" style="display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; border-radius: 6px; background: rgba(0,0,0,0.3); color: ${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color: ${JE.currentSettings.customSubtitleBgColor || '#00000000'}; text-shadow: ${JE.computeSubtitleTextShadow()}; letter-spacing: ${JE.computeSubtitleLetterSpacing()}; padding: 12px 20px; flex: 0.5; align-self: center;">AaBbCcDd</div>
                                 </div>
                             </div>
                             <div style="margin-bottom: 16px;"><div style="font-weight: 600; margin-bottom: 8px;">${JE.t('panel_settings_subtitles_size')}</div><div id="font-size-presets-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px;">${generatePresetHTML(JE.fontSizePresets, 'font-size')}</div></div>
                             <div style="margin-bottom: 16px;"><div style="font-weight: 600; margin-bottom: 8px;">${JE.t('panel_settings_subtitles_font')}</div><div id="font-family-presets-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px;">${generatePresetHTML(JE.fontFamilyPresets, 'font-family')}</div></div>
                             <div style="padding: 12px; background: ${presetBoxBackground}; border-radius: 6px; border-left: 3px solid ${toggleAccentColor};">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                    <span style="font-weight: 600;">${JE.t('panel_settings_subtitles_position')}</span>
+                                    <span style="font-weight: 600;">${JE.t('panel_settings_subtitles_layout')}</span>
                                     <div style="display:flex; align-items:center; gap:8px;">
-                                        <span id="subtitlePositionReadout" style="font-size:11px; color:rgba(255,255,255,0.5); font-variant-numeric:tabular-nums;">${JE.currentSettings.subtitleHorizontalPosition ?? 50}, ${JE.currentSettings.subtitleVerticalPosition ?? 95}</span>
+                                        <span id="subtitlePositionReadout" style="font-size:11px; color:rgba(255,255,255,0.5); font-variant-numeric:tabular-nums;">${JE.currentSettings.subtitleHorizontalPosition ?? 50}, ${JE.currentSettings.subtitleVerticalPosition ?? 95} · ${JE.currentSettings.subtitleLetterSpacingPct ?? 0}%</span>
                                         <button id="subtitlePositionReset" style="font-family:inherit; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); padding:3px 8px; border-radius:4px; font-size:11px; cursor:pointer; display:flex; align-items:center;"><span class="material-icons" style="font-size:16px;">restart_alt</span></button>
                                     </div>
                                 </div>
@@ -309,10 +309,17 @@
                                         <!-- Subtitle preview text, anchored by its BOTTOM edge to
                                              mirror applySubtitlePosition (bottom: 100-yPct%) so the
                                              preview matches where playback subtitles actually land. -->
-                                        <div id="subtitlePositionPreview" style="position:absolute; transform:translateX(-50%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:${JE.computeSubtitleTextShadow()}; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; bottom:${100 - (JE.currentSettings.subtitleVerticalPosition ?? 95)}%; top:auto;">AaBbCcDd</div>
+                                        <div id="subtitlePositionPreview" style="position:absolute; transform:translateX(-50%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:${JE.computeSubtitleTextShadow()}; letter-spacing:${JE.computeSubtitleLetterSpacing()}; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; bottom:${100 - (JE.currentSettings.subtitleVerticalPosition ?? 95)}%; top:auto;">AaBbCcDd</div>
                                     </div>
                                     <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeRight" data-dx="1" data-dy="0" style="grid-column:3; grid-row:2; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_right')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_right')}"><span class="material-icons">keyboard_arrow_right</span></button>
                                     <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeDown" data-dx="0" data-dy="1" style="grid-column:2; grid-row:3; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_down')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_down')}"><span class="material-icons">keyboard_arrow_down</span></button>
+                                </div>
+                                <div style="margin-top: 12px;">
+                                    <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">${JE.t('panel_settings_subtitles_letter_spacing')}</div>
+                                    <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
+                                        <input type="range" id="subtitleLetterSpacingPct" min="-10" max="50" step="1" value="${JE.currentSettings.subtitleLetterSpacingPct ?? 0}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                        <span id="subtitleLetterSpacingPctValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleLetterSpacingPct ?? 0}%</span>
+                                    </div>
                                 </div>
                                 <div id="je-subtitle-position-note" style="display:none; margin-top:6px; font-size:11px; color:#ffcf5c; text-align:center; align-items:center; justify-content:center; gap:4px;">
                                     <span class="material-icons" style="font-size:13px;">warning</span>

@@ -39,6 +39,19 @@
     };
 
     /**
+     * Applies the current subtitle letter spacing to both settings-panel previews.
+     * Module-scoped for the same reason as updateSubtitleShadowPreviews.
+     * @returns {void}
+     */
+    const updateSubtitleLetterSpacingPreviews = () => {
+        const spacing = JE.computeSubtitleLetterSpacing();
+        const preview = document.getElementById('subtitleColorPreview');
+        if (preview) preview.style.letterSpacing = spacing;
+        const posPreviewEl = document.getElementById('subtitlePositionPreview');
+        if (posPreviewEl) posPreviewEl.style.letterSpacing = spacing;
+    };
+
+    /**
      * Shows outline and shadow controls only for transparent backgrounds.
      * @returns {void}
      */
@@ -500,6 +513,32 @@
         makeSliderDraggable(outlineSizeSlider);
         makeSliderDraggable(shadowSizeSlider);
 
+        // Subtitle letter spacing. Unlike outline and shadow this applies to opaque
+        // backgrounds too, so it lives in the Layout block rather than the color box.
+        const letterSpacingSlider = document.getElementById('subtitleLetterSpacingPct');
+
+        /**
+         * Saves the letter spacing control, updates previews and reapplies styles.
+         * @returns {void}
+         */
+        const updateSubtitleLetterSpacing = () => {
+            if (!letterSpacingSlider) return;
+            JE.currentSettings.subtitleLetterSpacingPct = parseInt(letterSpacingSlider.value, 10);
+
+            const letterSpacingValueEl = document.getElementById('subtitleLetterSpacingPctValue');
+            if (letterSpacingValueEl) letterSpacingValueEl.textContent = `${letterSpacingSlider.value}%`;
+
+            updateSubtitleLetterSpacingPreviews();
+            updatePositionReadout();
+
+            saveSettingsDebounced();
+            JE.applySavedStylesWhenReady();
+            resetAutoCloseTimer();
+        };
+
+        if (letterSpacingSlider) letterSpacingSlider.addEventListener('input', updateSubtitleLetterSpacing);
+        makeSliderDraggable(letterSpacingSlider);
+
         // --- Subtitle position drag grid ---
         const posGrid = document.getElementById('subtitlePositionGrid');
         const posPreview = document.getElementById('subtitlePositionPreview');
@@ -507,11 +546,12 @@
         const posReadout = document.getElementById('subtitlePositionReadout');
 
         /**
-         * Displays the current horizontal and vertical percentages.
+         * Displays the current horizontal and vertical percentages plus letter
+         * spacing -- everything the block's reset button restores.
          * @returns {void}
          */
         const updatePositionReadout = () => {
-            if (posReadout) posReadout.textContent = `${JE.currentSettings.subtitleHorizontalPosition ?? 50}, ${JE.currentSettings.subtitleVerticalPosition ?? 95}`;
+            if (posReadout) posReadout.textContent = `${JE.currentSettings.subtitleHorizontalPosition ?? 50}, ${JE.currentSettings.subtitleVerticalPosition ?? 95} · ${JE.currentSettings.subtitleLetterSpacingPct ?? 0}%`;
         };
 
         if (posGrid) {
@@ -652,9 +692,17 @@
             posResetBtn.addEventListener('click', () => {
                 JE.currentSettings.subtitleHorizontalPosition = 50;
                 JE.currentSettings.subtitleVerticalPosition = 95;
+                JE.currentSettings.subtitleLetterSpacingPct = 0;
                 if (posPreview) { posPreview.style.left = '50%'; posPreview.style.top = 'auto'; posPreview.style.bottom = '5%'; }
+                if (letterSpacingSlider) letterSpacingSlider.value = '0';
+                const letterSpacingValueEl = document.getElementById('subtitleLetterSpacingPctValue');
+                if (letterSpacingValueEl) letterSpacingValueEl.textContent = '0%';
+                updateSubtitleLetterSpacingPreviews();
                 updatePositionReadout();
                 if (typeof JE.applySubtitlePosition === 'function') JE.applySubtitlePosition();
+                // Letter spacing is a text style, not a container offset, so the
+                // position reapply above doesn't reach active subtitles.
+                JE.applySavedStylesWhenReady();
                 JE.saveUserSettings('settings.json', JE.currentSettings);
                 resetAutoCloseTimer();
             });

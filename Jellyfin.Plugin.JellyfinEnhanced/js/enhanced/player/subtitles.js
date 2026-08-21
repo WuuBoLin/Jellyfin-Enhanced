@@ -117,6 +117,18 @@
     };
 
     /**
+     * Builds the letter-spacing value for the current subtitle settings. Stored
+     * as a percent of font size and applied in em so tracking scales with the
+     * rendered font instead of staying fixed across the size presets. Negative
+     * percentages tighten the text.
+     * @returns {string} CSS letter-spacing value; `normal` at zero.
+     */
+    JE.computeSubtitleLetterSpacing = () => {
+        const pct = parseFloat(JE.currentSettings.subtitleLetterSpacingPct) || 0;
+        return pct === 0 ? 'normal' : `${pct / 100}em`;
+    };
+
+    /**
      * Applies subtitle position to the .videoSubtitles container element.
      * xPct is the horizontal center; yPct is the bottom edge, anchored via
      * `bottom` so extra lines grow upward instead of shifting the bottom margin.
@@ -167,6 +179,7 @@
             el.style.removeProperty('font-size');
             el.style.removeProperty('font-family');
             el.style.removeProperty('text-shadow');
+            el.style.removeProperty('letter-spacing');
             el.style.removeProperty('border-radius');
             el.style.removeProperty('padding');
             el.style.removeProperty('font-weight');
@@ -216,6 +229,7 @@
         element.style.setProperty('font-size', `${currentSubtitleStyle.fontSize}vw`, 'important');
         element.style.setProperty('font-family', currentSubtitleStyle.fontFamily, 'important');
         element.style.setProperty('text-shadow', currentSubtitleStyle.textShadow || 'none', 'important');
+        element.style.setProperty('letter-spacing', currentSubtitleStyle.letterSpacing || 'normal', 'important');
 
         // Border radius, not configurable in the UI ***
         element.style.setProperty('border-radius', '5px', 'important');
@@ -270,7 +284,7 @@
      */
     JE.applySubtitleStyles = (textColor, bgColor, fontSize, fontFamily, textShadow) => {
         // Store the chosen style globally for the observer to use
-        currentSubtitleStyle = { textColor, bgColor, fontSize, fontFamily, textShadow };
+        currentSubtitleStyle = { textColor, bgColor, fontSize, fontFamily, textShadow, letterSpacing: JE.computeSubtitleLetterSpacing() };
 
         // Force-apply to any subtitle elements that might already exist
         document.querySelectorAll('.videoSubtitlesInner').forEach(forceApplyInlineStyles);
@@ -287,7 +301,9 @@
         // above never touches them). Color/font/size/shadow carry over here; the
         // .videoSubtitlesInner-only properties (border-radius, padding) and the
         // position override do not, since ::cue's allowed property set excludes
-        // them and there's no repositionable container to move.
+        // them and there's no repositionable container to move. letter-spacing is
+        // emitted too even though the WebVTT spec omits it from that set: browsers
+        // that support it honor it, and the rest drop the declaration silently.
         const oldStyleElement = document.getElementById('htmlvideoplayer-cuestyle');
         if (oldStyleElement?.sheet) {
             let styleElement = document.getElementById('je-html-videoplayer-cuestyle');
@@ -307,6 +323,7 @@
                     font-size: ${fontSize}vw !important;
                     font-family: ${fontFamily} !important;
                     text-shadow: ${textShadow || 'none'} !important;
+                    letter-spacing: ${currentSubtitleStyle.letterSpacing || 'normal'} !important;
                 }`;
                 styleElement.sheet.insertRule(cueRule, 0);
             } catch (e) {

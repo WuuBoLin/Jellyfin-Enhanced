@@ -384,6 +384,8 @@
     "jellyseerr_icon_no_user_tooltip": "Користувача не знайдено на Seerr",
     "panel_settings_playback": "Налаштування відтворення",
     "panel_settings_subtitles_position": "Позиція",
+    "panel_settings_subtitles_layout": "Розташування",
+    "panel_settings_subtitles_letter_spacing": "Міжлітерний інтервал",
     "bookmark_delete_all_confirm": "Видалити ВСІ закладки? Цю дію не можна скасувати!",
     "panel_shortcuts_global": "Глобальні",
     "feature_language_tags": "{{icon:flag}} Теги мови",
