@@ -145,6 +145,8 @@
             el.style.removeProperty('font-weight');
             el.style.removeProperty('font-style');
             el.style.removeProperty('font-variant');
+            el.style.removeProperty('margin-top');
+            el.style.removeProperty('margin-bottom');
         });
         document.querySelectorAll('.videoSubtitles').forEach(container => {
             container.style.removeProperty('position');
@@ -202,6 +204,12 @@
         element.style.setProperty('font-weight', 'normal', 'important');
         element.style.setProperty('font-style', 'normal', 'important');
         element.style.setProperty('font-variant', 'normal', 'important');
+
+        // Jellyfin's own vertical-position setting is applied as margin on this
+        // element (subtitleappearancehelper.js, default -3 -> margin-bottom:2.7em)
+        // and would silently offset JE's container-based positioning.
+        element.style.setProperty('margin-top', '0', 'important');
+        element.style.setProperty('margin-bottom', '0', 'important');
     }
 
     /**
