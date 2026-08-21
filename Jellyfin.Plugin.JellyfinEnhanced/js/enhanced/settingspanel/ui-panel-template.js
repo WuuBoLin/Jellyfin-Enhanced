@@ -277,8 +277,11 @@
                                         <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.08);transform:translateX(-50%);"></div>
                                         <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,0.08);transform:translateY(-50%);"></div>
                                     </div>
-                                    <!-- Subtitle preview text -->
-                                    <div id="subtitlePositionPreview" style="position:absolute; transform:translate(-50%,-50%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:0 0 4px #000; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; top:${JE.currentSettings.subtitleVerticalPosition ?? 85}%;">AaBbCcDd</div>
+                                    <!-- Subtitle preview text. translate(-50%,-100%) anchors the
+                                         BOTTOM edge at top:yPct%, mirroring applySubtitlePosition's
+                                         bottom-edge anchoring (bottom: 100-yPct%) so the preview
+                                         matches where playback subtitles actually land. -->
+                                    <div id="subtitlePositionPreview" style="position:absolute; transform:translate(-50%,-100%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:0 0 4px #000; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; top:${JE.currentSettings.subtitleVerticalPosition ?? 85}%;">AaBbCcDd</div>
                                 </div>
                                 <div id="je-subtitle-position-note" style="display:none; margin-top:6px; font-size:11px; color:#ffcf5c; text-align:center; align-items:center; justify-content:center; gap:4px;">
                                     <span class="material-icons" style="font-size:13px;">warning</span>
