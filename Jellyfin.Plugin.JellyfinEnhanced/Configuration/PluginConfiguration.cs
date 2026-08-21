@@ -162,6 +162,7 @@ namespace Jellyfin.Plugin.JellyfinEnhanced.Configuration
             JellyseerrShowDetailPageLinkAsText = false;
             ShowElsewhereOnJellyseerr = false;
             JellyseerrUseMoreInfoModal = true;
+            JellyseerrAvailablePosterLinksToJellyfin = false;
             JellyseerrUrls = "";
             JellyseerrApiKey = "";
             JellyseerrUrlMappings = "";
