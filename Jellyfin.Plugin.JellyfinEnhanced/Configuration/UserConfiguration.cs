@@ -20,6 +20,10 @@ namespace Jellyfin.Plugin.JellyfinEnhanced.Configuration
         public int SelectedFontFamilyPresetIndex { get; set; }
         public string CustomSubtitleTextColor { get; set; } = "#FFFFFFFF";
         public string CustomSubtitleBgColor { get; set; } = "#00000000";
+        public string SubtitleOutlineColor { get; set; } = "#000000";
+        public double SubtitleOutlineSize { get; set; } = 2;
+        public string SubtitleShadowColor { get; set; } = "#000000";
+        public double SubtitleShadowSize { get; set; } = 0;
         public bool UsingCustomColors { get; set; }
         public int SubtitleVerticalPosition { get; set; } = 85;
         public int SubtitleHorizontalPosition { get; set; } = 50;

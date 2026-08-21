@@ -12,7 +12,7 @@
      * @type {Array<object>}
      */
     JE.subtitlePresets = [
-        { name: "Clean White", textColor: "#FFFFFFFF", bgColor: "transparent", textShadow: "0 0 4px #000, 0 0 8px #000, 1px 1px 2px #000", previewText: "Aa" },
+        { name: "Clean White", textColor: "#FFFFFFFF", bgColor: "transparent", previewText: "Aa" },
         { name: "Classic Black Box", textColor: "#FFFFFFFF", bgColor: "#000000FF", previewText: "Aa" },
         { name: "Netflix Style", textColor: "#FFFFFFFF", bgColor: "#000000B2", previewText: "Aa" },
         { name: "Cinema Yellow", textColor: "#FFFF00FF", bgColor: "#000000B2", previewText: "Aa" },
@@ -68,6 +68,44 @@
         // to 255 there rather than reusing the caller's "unusable input" fallback.
         const alphaValue = input.length === 9 ? parseInt(input.slice(7, 9), 16) : 255;
         return { swatch, alphaValue: Number.isNaN(alphaValue) ? fallback.fallbackAlphaValue : alphaValue };
+    };
+
+    /**
+     * Checks whether a subtitle background is fully transparent.
+     * @param {string} bgColor CSS background color value.
+     * @returns {boolean} True when the background is transparent.
+     */
+    JE.isSubtitleBackgroundTransparent = (bgColor) =>
+        bgColor === 'transparent' || /^#[0-9a-f]{6}00$/i.test(bgColor);
+
+    /**
+     * Builds the text-shadow value for the current subtitle settings. Outline
+     * and shadow effects are omitted for opaque backgrounds because the box
+     * already provides contrast. The text-shadow property is supported by both
+     * inline subtitle elements and the ::cue rendering path.
+     * @returns {string} CSS text-shadow value.
+     */
+    JE.computeSubtitleTextShadow = () => {
+        const bgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
+        if (!JE.isSubtitleBackgroundTransparent(bgColor)) return 'none';
+
+        const layers = [];
+        const outlineSize = parseFloat(JE.currentSettings.subtitleOutlineSize) || 0;
+        if (outlineSize > 0) {
+            const outlineColor = JE.currentSettings.subtitleOutlineColor || '#000000';
+            const outlineOffset = outlineSize;
+            // Approximate a smooth outline with shadows in all eight directions.
+            [[-outlineOffset, 0], [outlineOffset, 0], [0, -outlineOffset], [0, outlineOffset],
+                [-outlineOffset, -outlineOffset], [outlineOffset, -outlineOffset],
+                [-outlineOffset, outlineOffset], [outlineOffset, outlineOffset]]
+                .forEach(([x, y]) => layers.push(`${x}px ${y}px 1px ${outlineColor}`));
+        }
+        const shadowSize = parseFloat(JE.currentSettings.subtitleShadowSize) || 0;
+        if (shadowSize > 0) {
+            const shadowColor = JE.currentSettings.subtitleShadowColor || '#000000';
+            layers.push(`0 0 ${shadowSize}px ${shadowColor}`, `0 0 ${shadowSize * 2}px ${shadowColor}`);
+        }
+        return layers.length ? layers.join(', ') : 'none';
     };
 
     /**
@@ -289,9 +327,7 @@
 
         const textColor = JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF';
         const bgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
-        const textShadow = bgColor === 'transparent' || bgColor === '#00000000'
-            ? '0 0 4px #000, 0 0 8px #000, 1px 1px 2px #000'
-            : 'none';
+        const textShadow = JE.computeSubtitleTextShadow();
 
         const fontSizePreset = JE.fontSizePresets[JE.currentSettings.selectedFontSizePresetIndex ?? 2];
         const fontFamilyPreset = JE.fontFamilyPresets[JE.currentSettings.selectedFontFamilyPresetIndex ?? 0];

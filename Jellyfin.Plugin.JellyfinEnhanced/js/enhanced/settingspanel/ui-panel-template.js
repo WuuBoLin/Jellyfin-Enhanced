@@ -70,6 +70,10 @@
         const decodedSubtitleText = JE.decodeSubtitleColor(JE.currentSettings.customSubtitleTextColor, { fallbackSwatch: '#FFFFFF', fallbackAlphaValue: 255 });
         const decodedSubtitleBg = JE.decodeSubtitleColor(JE.currentSettings.customSubtitleBgColor, { fallbackSwatch: '#000000', fallbackAlphaValue: 0 });
 
+        // Outline and shadow controls only apply to transparent backgrounds.
+        const subtitleBgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
+        const subtitleBgIsTransparent = JE.isSubtitleBackgroundTransparent(subtitleBgColor);
+
         const userShortcuts = (JE.userConfig.shortcuts.Shortcuts || []).reduce((acc, s) => {
             acc[s.Name] = s;
             return acc;
@@ -262,8 +266,26 @@
                                                 <input type="range" id="customSubtitleBgAlpha" min="0" max="255" value="${decodedSubtitleBg.alphaValue}" style="flex: 1; accent-color: ${primaryAccentColor};">
                                             </div>
                                         </div>
+                                        <div id="je-subtitle-outline-shadow-rows" style="display: ${subtitleBgIsTransparent ? 'flex' : 'none'}; flex-direction: column; gap: 12px;">
+                                            <div>
+                                                <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">Outline</div>
+                                                <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
+                                                    <input type="color" id="subtitleOutlineColorPicker" value="${JE.currentSettings.subtitleOutlineColor || '#000000'}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
+                                                    <input type="range" id="subtitleOutlineSize" min="0" max="5" step="0.5" value="${JE.currentSettings.subtitleOutlineSize ?? 2}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                                    <span id="subtitleOutlineSizeValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleOutlineSize ?? 2}px</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">Shadow</div>
+                                                <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
+                                                    <input type="color" id="subtitleShadowColorPicker" value="${JE.currentSettings.subtitleShadowColor || '#000000'}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
+                                                    <input type="range" id="subtitleShadowSize" min="0" max="10" step="0.5" value="${JE.currentSettings.subtitleShadowSize ?? 0}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                                    <span id="subtitleShadowSizeValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleShadowSize ?? 0}px</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div id="subtitleColorPreview" style="display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; border-radius: 6px; background: rgba(0,0,0,0.3); color: ${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color: ${JE.currentSettings.customSubtitleBgColor || '#00000000'}; padding: 12px 20px; flex: 0.5; align-self: center;">AaBbCcDd</div>
+                                    <div id="subtitleColorPreview" style="display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; border-radius: 6px; background: rgba(0,0,0,0.3); color: ${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color: ${JE.currentSettings.customSubtitleBgColor || '#00000000'}; text-shadow: ${JE.computeSubtitleTextShadow()}; padding: 12px 20px; flex: 0.5; align-self: center;">AaBbCcDd</div>
                                 </div>
                             </div>
                             <div style="margin-bottom: 16px;"><div style="font-weight: 600; margin-bottom: 8px;">${JE.t('panel_settings_subtitles_size')}</div><div id="font-size-presets-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px;">${generatePresetHTML(JE.fontSizePresets, 'font-size')}</div></div>
@@ -279,8 +301,12 @@
                                         <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.08);transform:translateX(-50%);"></div>
                                         <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,0.08);transform:translateY(-50%);"></div>
                                     </div>
-                                    <!-- Subtitle preview text -->
-                                    <div id="subtitlePositionPreview" style="position:absolute; transform:translateX(-50%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:0 0 4px #000; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; bottom:${100 - (JE.currentSettings.subtitleVerticalPosition ?? 95)}%; top:auto;">AaBbCcDd</div>
+                                    <!-- Subtitle preview text. Upstream anchors this box by its
+                                         BOTTOM edge (bottom: 100-yPct%), mirroring
+                                         applySubtitlePosition so the preview matches where playback
+                                         subtitles actually land. The text-shadow is the computed
+                                         outline/shadow value, so it tracks the user's settings. -->
+                                    <div id="subtitlePositionPreview" style="position:absolute; transform:translateX(-50%); pointer-events:none; white-space:nowrap; font-size:${posPreviewFontPx}px; font-family:${posPreviewFontFamilyPreset.family}; font-weight:600; color:${JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF'}; background-color:${JE.currentSettings.customSubtitleBgColor || 'transparent'}; padding:2px 6px; border-radius:3px; text-shadow:${JE.computeSubtitleTextShadow()}; left:${JE.currentSettings.subtitleHorizontalPosition ?? 50}%; bottom:${100 - (JE.currentSettings.subtitleVerticalPosition ?? 95)}%; top:auto;">AaBbCcDd</div>
                                 </div>
                                 <div id="je-subtitle-position-note" style="display:none; margin-top:6px; font-size:11px; color:#ffcf5c; text-align:center; align-items:center; justify-content:center; gap:4px;">
                                     <span class="material-icons" style="font-size:13px;">warning</span>

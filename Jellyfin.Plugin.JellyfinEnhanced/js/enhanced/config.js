@@ -92,6 +92,8 @@
             autoSkipIntro: false, autoSkipOutro: false,
             selectedStylePresetIndex: 0, selectedFontSizePresetIndex: 2, selectedFontFamilyPresetIndex: 0,
             customSubtitleTextColor: '#FFFFFFFF', customSubtitleBgColor: '#00000000',
+            subtitleOutlineColor: '#000000', subtitleOutlineSize: 2,
+            subtitleShadowColor: '#000000', subtitleShadowSize: 0,
             usingCustomColors: false,
             disableCustomSubtitleStyles: false,
             subtitleVerticalPosition: 95, subtitleHorizontalPosition: 50,
