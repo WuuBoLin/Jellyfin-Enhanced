@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/n00bcodr/Jellyfin-Enhanced/master/docs/images/icon.png",
     "versions": [
       {
+        "changelog": "- fix(subtitles): spread outline shadow copies evenly on a ring\n - fix(subtitles): neutralize Jellyfin's leftover vertical-position margin",
+        "targetAbi": "10.11.0.0",
+        "version": "12.3.1.1",
+        "sourceUrl": "https://github.com/WuuBoLin/Jellyfin-Enhanced/releases/download/12.3.1.1/Jellyfin.Plugin.JellyfinEnhanced_10.11.0.zip",
+        "checksum": "9EB2E16F7D995D8507B9B70BCE1FF431",
+        "timestamp": "2026-08-21T13:12:08"
+      },
+      {
         "changelog": "- fix(subtitles): anchor position preview to bottom edge like playback\n - feat(subtitles): user-adjustable outline and shadow for transparent styles",
         "targetAbi": "10.11.0.0",
         "version": "12.3.1.0",
