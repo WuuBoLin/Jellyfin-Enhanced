@@ -271,16 +271,16 @@
                                                 <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">Outline</div>
                                                 <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
                                                     <input type="color" id="subtitleOutlineColorPicker" value="${JE.currentSettings.subtitleOutlineColor || '#000000'}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
-                                                    <input type="range" id="subtitleOutlineSize" min="0" max="5" step="0.5" value="${JE.currentSettings.subtitleOutlineSize ?? 2}" style="flex: 1; accent-color: ${primaryAccentColor};">
-                                                    <span id="subtitleOutlineSizeValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleOutlineSize ?? 2}px</span>
+                                                    <input type="range" id="subtitleOutlineWidthPct" min="0" max="25" step="1" value="${JE.currentSettings.subtitleOutlineWidthPct ?? 6}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                                    <span id="subtitleOutlineWidthPctValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleOutlineWidthPct ?? 6}%</span>
                                                 </div>
                                             </div>
                                             <div>
                                                 <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">Shadow</div>
                                                 <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
                                                     <input type="color" id="subtitleShadowColorPicker" value="${JE.currentSettings.subtitleShadowColor || '#000000'}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
-                                                    <input type="range" id="subtitleShadowSize" min="0" max="10" step="0.5" value="${JE.currentSettings.subtitleShadowSize ?? 0}" style="flex: 1; accent-color: ${primaryAccentColor};">
-                                                    <span id="subtitleShadowSizeValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleShadowSize ?? 0}px</span>
+                                                    <input type="range" id="subtitleShadowBlurPct" min="0" max="50" step="1" value="${JE.currentSettings.subtitleShadowBlurPct ?? 0}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                                    <span id="subtitleShadowBlurPctValue" style="font-size: 12px; color: rgba(255,255,255,0.7); min-width: 34px; text-align: right;">${JE.currentSettings.subtitleShadowBlurPct ?? 0}%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -302,7 +302,6 @@
                                     <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeUp" data-dx="0" data-dy="-1" style="grid-column:2; grid-row:1; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_up')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_up')}"><span class="material-icons">keyboard_arrow_up</span></button>
                                     <button class="je-cat-btn je-pos-nudge" id="subtitlePositionNudgeLeft" data-dx="-1" data-dy="0" style="grid-column:1; grid-row:2; padding:3px;" title="${JE.t('panel_settings_subtitles_position_nudge_left')}" aria-label="${JE.t('panel_settings_subtitles_position_nudge_left')}"><span class="material-icons">keyboard_arrow_left</span></button>
                                     <div id="subtitlePositionGrid" tabindex="0" style="grid-column:2; grid-row:2; position:relative; width:min(52vw,280px); height:min(29vw,158px); background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; cursor:crosshair; user-select:none; overflow:hidden;">
-                                        <!-- Crosshair guides -->
                                         <div style="position:absolute;inset:0;pointer-events:none;">
                                             <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.08);transform:translateX(-50%);"></div>
                                             <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,0.08);transform:translateY(-50%);"></div>

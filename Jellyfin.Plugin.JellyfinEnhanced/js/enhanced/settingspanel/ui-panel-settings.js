@@ -49,6 +49,62 @@
         rows.style.display = JE.isSubtitleBackgroundTransparent(bgColor) ? 'flex' : 'none';
     };
 
+    let saveSettingsTimer = null;
+
+    /**
+     * Schedules a settings save 400 ms after the latest control update.
+     * Replaces any pending save timer while previews continue updating.
+     * @returns {void}
+     */
+    const saveSettingsDebounced = () => {
+        if (saveSettingsTimer) clearTimeout(saveSettingsTimer);
+        saveSettingsTimer = setTimeout(() => {
+            saveSettingsTimer = null;
+            JE.saveUserSettings('settings.json', JE.currentSettings);
+        }, 400);
+    };
+
+    /**
+     * Works around native range dragging being interrupted inside Jellyfin's
+     * settings panel. Captures pointer input and dispatches `input` after
+     * changing the slider value.
+     * @param {HTMLInputElement} slider Range input to wire.
+     * @returns {void}
+     */
+    const makeSliderDraggable = (slider) => {
+        if (!slider) return;
+
+        /**
+         * Maps pointer X to a slider step and dispatches `input` on change.
+         * @param {PointerEvent} e Captured pointer event.
+         * @returns {void}
+         */
+        const valueFromPointer = (e) => {
+            const rect = slider.getBoundingClientRect();
+            if (rect.width <= 0) return;
+            const min = parseFloat(slider.min) || 0;
+            const max = parseFloat(slider.max) || 100;
+            const step = parseFloat(slider.step) || 1;
+            const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            const raw = min + ratio * (max - min);
+            const snapped = Math.max(min, Math.min(max, Math.round((raw - min) / step) * step + min));
+            const next = String(+snapped.toFixed(4));
+            if (slider.value === next) return;
+            slider.value = next;
+            slider.dispatchEvent(new Event('input', { bubbles: true }));
+        };
+        slider.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0 && e.pointerType === 'mouse') return;
+            slider.setPointerCapture(e.pointerId);
+            e.preventDefault();
+            valueFromPointer(e);
+        });
+        slider.addEventListener('pointermove', (e) => {
+            if (!slider.hasPointerCapture(e.pointerId)) return;
+            valueFromPointer(e);
+        });
+    };
+
     /**
      * Wires the feature toggles, quality-tag category controls and subtitle
      * styling/position controls of the Settings tab.
@@ -397,7 +453,7 @@
             updateSubtitleShadowPreviews();
             updateOutlineShadowRowVisibility();
 
-            JE.saveUserSettings('settings.json', JE.currentSettings);
+            saveSettingsDebounced();
             JE.applySavedStylesWhenReady();
             resetAutoCloseTimer();
         };
@@ -406,12 +462,14 @@
         if (customTextAlpha) customTextAlpha.addEventListener('input', updateCustomSubtitleColors);
         if (customBgColorPicker) customBgColorPicker.addEventListener('input', updateCustomSubtitleColors);
         if (customBgAlpha) customBgAlpha.addEventListener('input', updateCustomSubtitleColors);
+        makeSliderDraggable(customTextAlpha);
+        makeSliderDraggable(customBgAlpha);
 
         // Inline subtitle outline and shadow controls; a size of 0 disables each effect.
         const outlineColorPicker = document.getElementById('subtitleOutlineColorPicker');
-        const outlineSizeSlider = document.getElementById('subtitleOutlineSize');
+        const outlineSizeSlider = document.getElementById('subtitleOutlineWidthPct');
         const shadowColorPicker = document.getElementById('subtitleShadowColorPicker');
-        const shadowSizeSlider = document.getElementById('subtitleShadowSize');
+        const shadowSizeSlider = document.getElementById('subtitleShadowBlurPct');
 
         /**
          * Saves outline and shadow controls, updates previews and reapplies styles.
@@ -419,18 +477,18 @@
          */
         const updateSubtitleOutlineShadow = () => {
             if (outlineColorPicker) JE.currentSettings.subtitleOutlineColor = outlineColorPicker.value;
-            if (outlineSizeSlider) JE.currentSettings.subtitleOutlineSize = parseFloat(outlineSizeSlider.value);
+            if (outlineSizeSlider) JE.currentSettings.subtitleOutlineWidthPct = parseInt(outlineSizeSlider.value, 10);
             if (shadowColorPicker) JE.currentSettings.subtitleShadowColor = shadowColorPicker.value;
-            if (shadowSizeSlider) JE.currentSettings.subtitleShadowSize = parseFloat(shadowSizeSlider.value);
+            if (shadowSizeSlider) JE.currentSettings.subtitleShadowBlurPct = parseInt(shadowSizeSlider.value, 10);
 
-            const outlineValueEl = document.getElementById('subtitleOutlineSizeValue');
-            if (outlineValueEl && outlineSizeSlider) outlineValueEl.textContent = `${outlineSizeSlider.value}px`;
-            const shadowValueEl = document.getElementById('subtitleShadowSizeValue');
-            if (shadowValueEl && shadowSizeSlider) shadowValueEl.textContent = `${shadowSizeSlider.value}px`;
+            const outlineValueEl = document.getElementById('subtitleOutlineWidthPctValue');
+            if (outlineValueEl && outlineSizeSlider) outlineValueEl.textContent = `${outlineSizeSlider.value}%`;
+            const shadowValueEl = document.getElementById('subtitleShadowBlurPctValue');
+            if (shadowValueEl && shadowSizeSlider) shadowValueEl.textContent = `${shadowSizeSlider.value}%`;
 
             updateSubtitleShadowPreviews();
 
-            JE.saveUserSettings('settings.json', JE.currentSettings);
+            saveSettingsDebounced();
             JE.applySavedStylesWhenReady();
             resetAutoCloseTimer();
         };
@@ -439,6 +497,8 @@
         if (outlineSizeSlider) outlineSizeSlider.addEventListener('input', updateSubtitleOutlineShadow);
         if (shadowColorPicker) shadowColorPicker.addEventListener('input', updateSubtitleOutlineShadow);
         if (shadowSizeSlider) shadowSizeSlider.addEventListener('input', updateSubtitleOutlineShadow);
+        makeSliderDraggable(outlineSizeSlider);
+        makeSliderDraggable(shadowSizeSlider);
 
         // --- Subtitle position drag grid ---
         const posGrid = document.getElementById('subtitlePositionGrid');
@@ -446,6 +506,10 @@
         const posResetBtn = document.getElementById('subtitlePositionReset');
         const posReadout = document.getElementById('subtitlePositionReadout');
 
+        /**
+         * Displays the current horizontal and vertical percentages.
+         * @returns {void}
+         */
         const updatePositionReadout = () => {
             if (posReadout) posReadout.textContent = `${JE.currentSettings.subtitleHorizontalPosition ?? 50}, ${JE.currentSettings.subtitleVerticalPosition ?? 95}`;
         };
@@ -465,6 +529,12 @@
                 if (typeof JE.applySubtitlePosition === 'function') JE.applySubtitlePosition();
             };
 
+            /**
+             * Moves the subtitle position and reapplies it to active playback.
+             * @param {number} dx Horizontal percentage-point offset.
+             * @param {number} dy Vertical percentage-point offset.
+             * @returns {void}
+             */
             const nudgePosition = (dx, dy) => {
                 const x = JE.currentSettings.subtitleHorizontalPosition ?? 50;
                 const y = JE.currentSettings.subtitleVerticalPosition ?? 95;
@@ -478,6 +548,10 @@
                 let holdDelay = null;
                 let holdRepeat = null;
 
+                /**
+                 * Stops hold-repeat timers and persists the resulting position.
+                 * @returns {void}
+                 */
                 const stopHold = () => {
                     if (holdDelay === null && holdRepeat === null) return;
                     clearTimeout(holdDelay);
@@ -488,8 +562,8 @@
                 };
 
                 btn.addEventListener('pointerdown', (e) => {
-                    // preventDefault stops touch-hold from selecting text or
-                    // showing the context menu while repeating.
+                    if (e.button !== 0 && e.pointerType === 'mouse') return;
+                    // Suppress touch selection and the context menu during hold-repeat.
                     e.preventDefault();
                     nudgePosition(dx, dy);
                     holdDelay = setTimeout(() => {
