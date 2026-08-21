@@ -54,6 +54,23 @@
         bgColor === 'transparent' || /^#[0-9a-f]{6}00$/i.test(bgColor);
 
     /**
+     * Splits a subtitle color into picker-friendly parts. Preset colors are
+     * not always eight-digit hex — "Clean White" uses the literal
+     * `transparent` — and naive substring parsing turns that into NaN, which
+     * range inputs silently replace with their midpoint.
+     * @param {string} color Color value: #RRGGBB, #RRGGBBAA, or `transparent`.
+     * @param {string} fallbackHex Six-digit hex used when color has no usable RGB.
+     * @param {number} fallbackAlpha Alpha 0-255 used when color has no alpha byte.
+     * @returns {{hex: string, alpha: number}} RGB hex and alpha byte.
+     */
+    JE.splitSubtitleColor = (color, fallbackHex, fallbackAlpha) => {
+        if (color === 'transparent') return { hex: fallbackHex, alpha: 0 };
+        const m = /^#([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(color || '');
+        if (!m) return { hex: fallbackHex, alpha: fallbackAlpha };
+        return { hex: `#${m[1]}`, alpha: m[2] === undefined ? fallbackAlpha : parseInt(m[2], 16) };
+    };
+
+    /**
      * Builds the text-shadow value for the current subtitle settings. Outline
      * and shadow effects are omitted for opaque backgrounds because the box
      * already provides contrast. The text-shadow property is supported by both

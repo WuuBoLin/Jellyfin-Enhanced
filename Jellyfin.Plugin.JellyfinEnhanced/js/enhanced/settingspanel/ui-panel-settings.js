@@ -754,12 +754,14 @@
                         const preview = document.getElementById('subtitleColorPreview');
 
                         if (textColorPicker && textAlphaSlider) {
-                            textColorPicker.value = selectedPreset.textColor.substring(0, 7);
-                            textAlphaSlider.value = parseInt(selectedPreset.textColor.substring(7, 9) || 'FF', 16);
+                            const textParts = JE.splitSubtitleColor(selectedPreset.textColor, '#FFFFFF', 255);
+                            textColorPicker.value = textParts.hex;
+                            textAlphaSlider.value = textParts.alpha;
                         }
                         if (bgColorPicker && bgAlphaSlider) {
-                            bgColorPicker.value = selectedPreset.bgColor.substring(0, 7);
-                            bgAlphaSlider.value = parseInt(selectedPreset.bgColor.substring(7, 9) || '00', 16);
+                            const bgParts = JE.splitSubtitleColor(selectedPreset.bgColor, '#000000', 0);
+                            bgColorPicker.value = bgParts.hex;
+                            bgAlphaSlider.value = bgParts.alpha;
                         }
                         if (preview) {
                             preview.style.color = selectedPreset.textColor;

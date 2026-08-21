@@ -72,6 +72,11 @@
         const subtitleBgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
         const subtitleBgIsTransparent = JE.isSubtitleBackgroundTransparent(subtitleBgColor);
 
+        // Stored colors may be the literal `transparent` (Clean White preset),
+        // which substring parsing would turn into NaN control values.
+        const subtitleTextParts = JE.splitSubtitleColor(JE.currentSettings.customSubtitleTextColor, '#FFFFFF', 255);
+        const subtitleBgParts = JE.splitSubtitleColor(JE.currentSettings.customSubtitleBgColor, '#000000', 0);
+
         const userShortcuts = (JE.userConfig.shortcuts.Shortcuts || []).reduce((acc, s) => {
             acc[s.Name] = s;
             return acc;
@@ -253,15 +258,15 @@
                                         <div>
                                             <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">Text</div>
                                             <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
-                                                <input type="color" id="customSubtitleTextColorPicker" value="${JE.currentSettings.customSubtitleTextColor?.substring(0, 7) || '#FFFFFF'}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
-                                                <input type="range" id="customSubtitleTextAlpha" min="0" max="255" value="${parseInt(JE.currentSettings.customSubtitleTextColor?.substring(7, 9) || 'FF', 16)}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                                <input type="color" id="customSubtitleTextColorPicker" value="${subtitleTextParts.hex}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
+                                                <input type="range" id="customSubtitleTextAlpha" min="0" max="255" value="${subtitleTextParts.alpha}" style="flex: 1; accent-color: ${primaryAccentColor};">
                                             </div>
                                         </div>
                                         <div>
                                             <div style="font-size: 13px; margin-bottom: 6px; color: rgba(255,255,255,0.8);">Background</div>
                                             <div class="je-subtitle-color-control-row" style="display: flex; gap: 8px; align-items: center;">
-                                                <input type="color" id="customSubtitleBgColorPicker" value="${JE.currentSettings.customSubtitleBgColor?.substring(0, 7) || '#000000'}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
-                                                <input type="range" id="customSubtitleBgAlpha" min="0" max="255" value="${parseInt(JE.currentSettings.customSubtitleBgColor?.substring(7, 9) || '00', 16)}" style="flex: 1; accent-color: ${primaryAccentColor};">
+                                                <input type="color" id="customSubtitleBgColorPicker" value="${subtitleBgParts.hex}" style="width: 50px; height: 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; background: transparent;">
+                                                <input type="range" id="customSubtitleBgAlpha" min="0" max="255" value="${subtitleBgParts.alpha}" style="flex: 1; accent-color: ${primaryAccentColor};">
                                             </div>
                                         </div>
                                         <div id="je-subtitle-outline-shadow-rows" style="display: ${subtitleBgIsTransparent ? 'flex' : 'none'}; flex-direction: column; gap: 12px;">
