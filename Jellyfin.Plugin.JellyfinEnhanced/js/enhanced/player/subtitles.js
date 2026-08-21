@@ -93,12 +93,18 @@
         const outlineSize = parseFloat(JE.currentSettings.subtitleOutlineSize) || 0;
         if (outlineSize > 0) {
             const outlineColor = JE.currentSettings.subtitleOutlineColor || '#000000';
-            const outlineOffset = outlineSize;
-            // Approximate a smooth outline with shadows in all eight directions.
-            [[-outlineOffset, 0], [outlineOffset, 0], [0, -outlineOffset], [0, outlineOffset],
-                [-outlineOffset, -outlineOffset], [outlineOffset, -outlineOffset],
-                [-outlineOffset, outlineOffset], [outlineOffset, outlineOffset]]
-                .forEach(([x, y]) => layers.push(`${x}px ${y}px 1px ${outlineColor}`));
+            // Approximate a smooth outline with shadow copies spread evenly on
+            // the circle of radius outlineSize. The copy count scales with the
+            // circumference (one copy per ~0.75px of arc) so neighboring copies
+            // keep overlapping at larger radii — a fixed 8-direction spread
+            // leaves detached lobes and uneven thickness beyond ~2px.
+            const copies = Math.max(8, Math.min(32, Math.ceil((2 * Math.PI * outlineSize) / 0.75)));
+            for (let i = 0; i < copies; i++) {
+                const angle = (2 * Math.PI * i) / copies;
+                const x = +(outlineSize * Math.cos(angle)).toFixed(2);
+                const y = +(outlineSize * Math.sin(angle)).toFixed(2);
+                layers.push(`${x}px ${y}px 1px ${outlineColor}`);
+            }
         }
         const shadowSize = parseFloat(JE.currentSettings.subtitleShadowSize) || 0;
         if (shadowSize > 0) {
