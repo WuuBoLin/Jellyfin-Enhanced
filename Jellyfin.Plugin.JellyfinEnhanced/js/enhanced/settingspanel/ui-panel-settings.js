@@ -26,6 +26,30 @@
     };
 
     /**
+     * Applies the current subtitle shadow to both settings-panel previews.
+     * Module-scoped because listeners in separate closures call it.
+     * @returns {void}
+     */
+    const updateSubtitleShadowPreviews = () => {
+        const shadow = JE.computeSubtitleTextShadow();
+        const preview = document.getElementById('subtitleColorPreview');
+        if (preview) preview.style.textShadow = shadow;
+        const posPreviewEl = document.getElementById('subtitlePositionPreview');
+        if (posPreviewEl) posPreviewEl.style.textShadow = shadow;
+    };
+
+    /**
+     * Shows outline and shadow controls only for transparent backgrounds.
+     * @returns {void}
+     */
+    const updateOutlineShadowRowVisibility = () => {
+        const rows = document.getElementById('je-subtitle-outline-shadow-rows');
+        if (!rows) return;
+        const bgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
+        rows.style.display = JE.isSubtitleBackgroundTransparent(bgColor) ? 'flex' : 'none';
+    };
+
+    /**
      * Wires the feature toggles, quality-tag category controls and subtitle
      * styling/position controls of the Settings tab.
      * @param {object} ctx Shared panel context assembled in ui-panel.js.
@@ -370,6 +394,8 @@
                 posPreviewEl.style.color = textColor;
                 posPreviewEl.style.backgroundColor = bgColor;
             }
+            updateSubtitleShadowPreviews();
+            updateOutlineShadowRowVisibility();
 
             JE.saveUserSettings('settings.json', JE.currentSettings);
             JE.applySavedStylesWhenReady();
@@ -380,6 +406,39 @@
         if (customTextAlpha) customTextAlpha.addEventListener('input', updateCustomSubtitleColors);
         if (customBgColorPicker) customBgColorPicker.addEventListener('input', updateCustomSubtitleColors);
         if (customBgAlpha) customBgAlpha.addEventListener('input', updateCustomSubtitleColors);
+
+        // Inline subtitle outline and shadow controls; a size of 0 disables each effect.
+        const outlineColorPicker = document.getElementById('subtitleOutlineColorPicker');
+        const outlineSizeSlider = document.getElementById('subtitleOutlineSize');
+        const shadowColorPicker = document.getElementById('subtitleShadowColorPicker');
+        const shadowSizeSlider = document.getElementById('subtitleShadowSize');
+
+        /**
+         * Saves outline and shadow controls, updates previews and reapplies styles.
+         * @returns {void}
+         */
+        const updateSubtitleOutlineShadow = () => {
+            if (outlineColorPicker) JE.currentSettings.subtitleOutlineColor = outlineColorPicker.value;
+            if (outlineSizeSlider) JE.currentSettings.subtitleOutlineSize = parseFloat(outlineSizeSlider.value);
+            if (shadowColorPicker) JE.currentSettings.subtitleShadowColor = shadowColorPicker.value;
+            if (shadowSizeSlider) JE.currentSettings.subtitleShadowSize = parseFloat(shadowSizeSlider.value);
+
+            const outlineValueEl = document.getElementById('subtitleOutlineSizeValue');
+            if (outlineValueEl && outlineSizeSlider) outlineValueEl.textContent = `${outlineSizeSlider.value}px`;
+            const shadowValueEl = document.getElementById('subtitleShadowSizeValue');
+            if (shadowValueEl && shadowSizeSlider) shadowValueEl.textContent = `${shadowSizeSlider.value}px`;
+
+            updateSubtitleShadowPreviews();
+
+            JE.saveUserSettings('settings.json', JE.currentSettings);
+            JE.applySavedStylesWhenReady();
+            resetAutoCloseTimer();
+        };
+
+        if (outlineColorPicker) outlineColorPicker.addEventListener('input', updateSubtitleOutlineShadow);
+        if (outlineSizeSlider) outlineSizeSlider.addEventListener('input', updateSubtitleOutlineShadow);
+        if (shadowColorPicker) shadowColorPicker.addEventListener('input', updateSubtitleOutlineShadow);
+        if (shadowSizeSlider) shadowSizeSlider.addEventListener('input', updateSubtitleOutlineShadow);
 
         // --- Subtitle position drag grid ---
         const posGrid = document.getElementById('subtitlePositionGrid');
@@ -574,13 +633,15 @@
                             posPreviewEl.style.color = selectedPreset.textColor;
                             posPreviewEl.style.backgroundColor = selectedPreset.bgColor;
                         }
+                        updateSubtitleShadowPreviews();
+                        updateOutlineShadowRowVisibility();
 
                         const fontSizeIndex = JE.currentSettings.selectedFontSizePresetIndex ?? 2;
                         const fontFamilyIndex = JE.currentSettings.selectedFontFamilyPresetIndex ?? 0;
                         const fontSize = JE.fontSizePresets[fontSizeIndex].size;
                         const fontFamily = JE.fontFamilyPresets[fontFamilyIndex].family;
                         updatePositionPreviewFont(JE.fontSizePresets[fontSizeIndex], JE.fontFamilyPresets[fontFamilyIndex]);
-                        JE.applySubtitleStyles(selectedPreset.textColor, selectedPreset.bgColor, fontSize, fontFamily, selectedPreset.textShadow);
+                        JE.applySubtitleStyles(selectedPreset.textColor, selectedPreset.bgColor, fontSize, fontFamily, JE.computeSubtitleTextShadow());
                         JE.toast(JE.t('toast_subtitle_style', { style: selectedPreset.name }));
                     } else if (type === 'font-size') {
                         JE.currentSettings.selectedFontSizePresetIndex = presetIndex;
@@ -590,9 +651,7 @@
                         // Use saved custom colors
                         const textColor = JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF';
                         const bgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
-                        const textShadow = bgColor === 'transparent' || bgColor === '#00000000'
-                            ? '0 0 4px #000, 0 0 8px #000, 1px 1px 2px #000'
-                            : 'none';
+                        const textShadow = JE.computeSubtitleTextShadow();
 
                         updatePositionPreviewFont(selectedPreset, JE.fontFamilyPresets[fontFamilyIndex]);
                         JE.applySubtitleStyles(textColor, bgColor, selectedPreset.size, fontFamily, textShadow);
@@ -605,9 +664,7 @@
                         // Use saved custom colors
                         const textColor = JE.currentSettings.customSubtitleTextColor || '#FFFFFFFF';
                         const bgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
-                        const textShadow = bgColor === 'transparent' || bgColor === '#00000000'
-                            ? '0 0 4px #000, 0 0 8px #000, 1px 1px 2px #000'
-                            : 'none';
+                        const textShadow = JE.computeSubtitleTextShadow();
 
                         updatePositionPreviewFont(JE.fontSizePresets[fontSizeIndex], selectedPreset);
                         JE.applySubtitleStyles(textColor, bgColor, fontSize, selectedPreset.family, textShadow);
