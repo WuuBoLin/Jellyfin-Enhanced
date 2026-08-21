@@ -72,8 +72,7 @@
         const subtitleBgColor = JE.currentSettings.customSubtitleBgColor || '#00000000';
         const subtitleBgIsTransparent = JE.isSubtitleBackgroundTransparent(subtitleBgColor);
 
-        // Stored colors may be the literal `transparent` (Clean White preset),
-        // which substring parsing would turn into NaN control values.
+        // Stored colors may be the literal `transparent` (Clean White preset).
         const subtitleTextParts = JE.splitSubtitleColor(JE.currentSettings.customSubtitleTextColor, '#FFFFFF', 255);
         const subtitleBgParts = JE.splitSubtitleColor(JE.currentSettings.customSubtitleBgColor, '#000000', 0);
 
