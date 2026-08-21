@@ -59,15 +59,16 @@
      * `transparent` — and naive substring parsing turns that into NaN, which
      * range inputs silently replace with their midpoint.
      * @param {string} color Color value: #RRGGBB, #RRGGBBAA, or `transparent`.
-     * @param {string} fallbackHex Six-digit hex used when color has no usable RGB.
-     * @param {number} fallbackAlpha Alpha 0-255 used when color has no alpha byte.
-     * @returns {{hex: string, alpha: number}} RGB hex and alpha byte.
+     * @param {string} fallbackHex Six-digit hex used when color is missing or invalid.
+     * @param {number} fallbackAlpha Alpha 0-255 used when color is missing or invalid.
+     * @returns {{hex: string, alpha: number}} RGB hex and alpha byte. A
+     * six-digit hex is opaque CSS, so it yields alpha 255, not fallbackAlpha.
      */
     JE.splitSubtitleColor = (color, fallbackHex, fallbackAlpha) => {
         if (color === 'transparent') return { hex: fallbackHex, alpha: 0 };
-        const m = /^#([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(color || '');
-        if (!m) return { hex: fallbackHex, alpha: fallbackAlpha };
-        return { hex: `#${m[1]}`, alpha: m[2] === undefined ? fallbackAlpha : parseInt(m[2], 16) };
+        const match = /^#([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(color || '');
+        if (!match) return { hex: fallbackHex, alpha: fallbackAlpha };
+        return { hex: `#${match[1]}`, alpha: match[2] === undefined ? 255 : parseInt(match[2], 16) };
     };
 
     /**
